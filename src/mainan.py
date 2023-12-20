@@ -5,7 +5,6 @@ from src.config import SPECIAL_USERS
 import openai
 import time
 import urllib.request
-print('  ')
 
 async def spam(update: Update, context: ContextTypes.DEFAULT_TYPE):
     prompt= ' '.join(update.message.text.split()[1:])

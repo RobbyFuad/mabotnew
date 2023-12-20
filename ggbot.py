@@ -40,13 +40,44 @@ def main():
     application.add_handler(CallbackQueryHandler(button))
     application.add_handler(InlineQueryHandler(inline_query))
     
+    application.add_handler(ConversationHandler(
+        entry_points=[CommandHandler("dev2start", dev2_start)],
+        states={
+            LOGIN: [MessageHandler(filters.TEXT, login)],
+            GETINFO: [MessageHandler(filters.Regex("^(login|not)$"), getInfo),
+                    CommandHandler("skip", skip_photo)
+            ],
+            FILLPIA: [
+                MessageHandler(filters.LOCATION, location),
+                CommandHandler("skip", skip_location),
+            ]
+        },
+        fallbacks=[CommandHandler("batal", cancel)]
+        )
+    )
+    
+    conv_handler2 = ConversationHandler(
+        entry_points=[CommandHandler("dev3start", dev3_start)],
+        states={
+            TES1: [MessageHandler(filters.TEXT, tes1)],
+            TES2: [MessageHandler(filters.PHOTO, tes2), CommandHandler("skip", skip_tes2)],
+            TES3: [
+                MessageHandler(filters.LOCATION, tes3),
+                CommandHandler("skip", skip_tes3),
+            ]
+        },
+        fallbacks=[CommandHandler("cancel", cancel)]
+    )
+
+    application.add_handler(conv_handler2)
+    
     ##### Special Feature #####
     application.add_handler(MessageHandler(filters.Regex(r'^!'), ai_txt))
-    application.add_handler(MessageHandler(filter_img, ai_img))
-    application.add_handler(MessageHandler(filter_spam, spam))
+    application.add_handler(MessageHandler(filters.TEXT & filter_img, ai_img))
+    application.add_handler(MessageHandler(filters.TEXT & filter_spam, spam))
     application.add_handler(MessageHandler(filters.Regex(r'^%'), searcher))
 
-    application.run_polling()
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == '__main__':
     main()

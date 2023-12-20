@@ -5,5 +5,7 @@ from .cronjobs import *
 from .starter import *
 from .gsearch import *
 from .dev import *
+from .dev2 import *
+from .dev3 import *
 from .custom_filter import *
 from .mainan import *
